@@ -1,0 +1,4 @@
+repository "WeatherCraft@tj_axi_cat@cloud.cn"
+  path "/"
+    br "/main"
+    co "/main"

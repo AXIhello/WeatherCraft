@@ -7,64 +7,59 @@ namespace UniStorm.Utility
 {
     public class UniStormClouds : MonoBehaviour
     {
-        [HideInInspector]
-        public Material skyMaterial;
-        [HideInInspector]
-        public Material cloudsMaterial;
-        [HideInInspector]
-        public Material shadowsMaterial;
-        [HideInInspector]
-        public Material shadowsBuildingMaterial;
-        [HideInInspector]
-        public Transform cloudShadows;
-        [HideInInspector]
-        public Light sun;
-        [HideInInspector]
-        public Transform moon;
-        [HideInInspector]
-        public enum CloudPerformance { Low = 0, Medium = 1, High = 2, Ultra = 3 }
-        [HideInInspector]
-        private int[] presetResolutions = { 1024, 2048, 2048, 2048 };
-        [HideInInspector]
-        private string[] keywordsA = { "LOW", "MEDIUM", "HIGH", "ULTRA" };
-        [HideInInspector]
-        public enum CloudShadowsType { Off = 0, Simulated, RealTime }
-        [HideInInspector]
-        public CloudShadowsType CloudShadowsTypeRef = CloudShadowsType.Off;
-        [HideInInspector]
-        public enum CloudType { TwoD = 0, Volumetric}
-        [HideInInspector]
-        private string[] keywordsB = { "TWOD", "VOLUMETRIC" };
-        [HideInInspector]
-        public CloudType cloudType = CloudType.Volumetric;
-        [HideInInspector]
-        public CloudPerformance performance = CloudPerformance.High;
-        [HideInInspector]
-        public int CloudShadowResolutionValue = 256;
-        [HideInInspector]
-        [Range(0, 1)] public float cloudTransparency = 0.85f;
-        [HideInInspector]
-        [Range(0, 6)] public int shadowBlurIterations;
-        [HideInInspector]
-        public CommandBuffer cloudsCommBuff;
-        //[HideInInspector]
-        //public int numRendersPerFrame = 1;
+        [HideInInspector] public Material skyMaterial;
+        [HideInInspector] public Material cloudsMaterial;
+        [HideInInspector] public Material shadowsMaterial;
+        [HideInInspector] public Material shadowsBuildingMaterial;
+        [HideInInspector] public Transform cloudShadows;
+        [HideInInspector] public Light sun;
+        [HideInInspector] public Transform moon;
+        [HideInInspector] public enum CloudPerformance { Low = 0, Medium = 1, High = 2, Ultra = 3 }
+        [HideInInspector] private int[] presetResolutions = { 1024, 2048, 2048, 2048 };
+        [HideInInspector] private string[] keywordsA = { "LOW", "MEDIUM", "HIGH", "ULTRA" };
+        [HideInInspector] public enum CloudShadowsType { Off = 0, Simulated, RealTime }
+        [HideInInspector] public CloudShadowsType CloudShadowsTypeRef = CloudShadowsType.Off;
+        [HideInInspector] public enum CloudType { TwoD = 0, Volumetric }
+        [HideInInspector] private string[] keywordsB = { "TWOD", "VOLUMETRIC" };
+        [HideInInspector] public CloudType cloudType = CloudType.Volumetric;
+        [HideInInspector] public CloudPerformance performance = CloudPerformance.High;
+        [HideInInspector] public int CloudShadowResolutionValue = 256;
+        [HideInInspector] [Range(0, 1)] public float cloudTransparency = 0.85f;
+        [HideInInspector] [Range(0, 6)] public int shadowBlurIterations;
         private int frameCount = 0;
 
-        private void Start()
+        [HideInInspector] public int fullBufferIndex = 0;
+        [HideInInspector] public RenderTexture[] fullCloudsBuffer;
+        [HideInInspector] public RenderTexture lowResCloudsBuffer;
+        [HideInInspector] public RenderTexture[] cloudShadowsBuffer;
+        [HideInInspector] public RenderTexture PublicCloudShadowTexture;
+
+        private float baseCloudOffset;
+        private float detailCloudOffset;
+
+        public bool IsInitialized
         {
-            if (UniStormSystem.Instance.UseRuntimeDelay == UniStormSystem.EnableFeature.Enabled)
+            get
             {
-                GenerateInitialNoise();
-                StartCoroutine(InitializeClouds());
-            }
-            else
-            {
-                GenerateInitialNoise();
+                return fullCloudsBuffer != null && fullCloudsBuffer.Length >= 2 &&
+                       cloudShadowsBuffer != null && cloudShadowsBuffer.Length >= 2 &&
+                       lowResCloudsBuffer != null &&
+                       skyMaterial != null &&
+                       shadowsBuildingMaterial != null &&
+                       cloudsMaterial != null;
             }
         }
 
-        // Generate the random noise needed for the clouds
+        private void Start()
+        {
+            GenerateInitialNoise();
+
+            if (UniStormSystem.Instance.UseRuntimeDelay == UniStormSystem.EnableFeature.Enabled)
+            {
+                StartCoroutine(InitializeClouds());
+            }
+        }
+
         void GenerateInitialNoise()
         {
             SetCloudDetails(performance, cloudType, CloudShadowsTypeRef);
@@ -83,40 +78,29 @@ namespace UniStorm.Utility
                 CloudShadowResolutionValue = 256;
             }
 
-            cloudsCommBuff = new CommandBuffer();
-            cloudsCommBuff.name = "Render Clouds";
-
             shadowsBuildingMaterial = new Material(Shader.Find("Hidden/UniStorm/CloudShadows"));
 
-            if (UniStormSystem.Instance.UseRuntimeDelay == UniStormSystem.EnableFeature.Disabled && UniStormSystem.Instance.PlayerCamera != null)
-            {
-                if (UniStormSystem.Instance.VRStateData.VREnabled && UniStormSystem.Instance.VRStateData.StereoRenderingMode == VRState.StereoRenderingModes.SinglePass)
-                {
-                    UniStormSystem.Instance.PlayerCamera.AddCommandBuffer(CameraEvent.BeforeImageEffects, cloudsCommBuff);
-                }
-                else
-                {
-                    UniStormSystem.Instance.PlayerCamera.AddCommandBuffer(CameraEvent.AfterSkybox, cloudsCommBuff);
-                }
-            }
-            else if (UniStormSystem.Instance.UseRuntimeDelay == UniStormSystem.EnableFeature.Disabled && UniStormSystem.Instance.PlayerCamera == null)
-            {
-                StartCoroutine(InitializeClouds());
-            }
+            InitializeRenderTextures();
         }
 
-        IEnumerator InitializeClouds ()
-        {          
-            yield return new WaitUntil(()=> UniStormSystem.Instance.UniStormInitialized);
+        void InitializeRenderTextures()
+        {
+            int size = presetResolutions[(int)performance];
 
-            if (UniStormSystem.Instance.VRStateData.VREnabled && UniStormSystem.Instance.VRStateData.StereoRenderingMode == VRState.StereoRenderingModes.SinglePass)
-            {
-                UniStormSystem.Instance.PlayerCamera.AddCommandBuffer(CameraEvent.BeforeImageEffects, cloudsCommBuff);
-            }
-            else
-            {
-                UniStormSystem.Instance.PlayerCamera.AddCommandBuffer(CameraEvent.AfterSkybox, cloudsCommBuff);
-            }
+            EnsureArray(ref fullCloudsBuffer, 2);
+            EnsureArray(ref cloudShadowsBuffer, 2);
+
+            EnsureRenderTarget(ref fullCloudsBuffer[0], size, size, RenderTextureFormat.ARGBHalf, FilterMode.Bilinear, "fullCloudBuff0");
+            EnsureRenderTarget(ref fullCloudsBuffer[1], size, size, RenderTextureFormat.ARGBHalf, FilterMode.Bilinear, "fullCloudBuff1");
+            EnsureRenderTarget(ref cloudShadowsBuffer[0], CloudShadowResolutionValue, CloudShadowResolutionValue, RenderTextureFormat.ARGBHalf, FilterMode.Bilinear, "cloudShadowBuff0");
+            EnsureRenderTarget(ref cloudShadowsBuffer[1], size, size, RenderTextureFormat.ARGBHalf, FilterMode.Bilinear, "cloudShadowBuff1");
+
+            EnsureRenderTarget(ref lowResCloudsBuffer, size / 4, size / 4, RenderTextureFormat.ARGBFloat, FilterMode.Point, "quarterCloudBuff");
+        }
+
+        IEnumerator InitializeClouds()
+        {
+            yield return new WaitUntil(() => UniStormSystem.Instance.UniStormInitialized);
         }
 
         #region Helper Functions and Variables
@@ -143,14 +127,14 @@ namespace UniStorm.Utility
                 rt.name = name;
                 rt.filterMode = filterMode;
                 rt.wrapMode = TextureWrapMode.Repeat;
-                return true;// new target
+                return true;
             }
 
 #if UNITY_ANDROID || UNITY_IPHONE
             rt.DiscardContents();
 #endif
 
-            return false;// same target
+            return false;
         }
 
         static int[] haltonSequence = {
@@ -158,11 +142,11 @@ namespace UniStorm.Utility
         };
 
         static int[,] offset = {
-                    {2,1}, {1,2 }, {2,0}, {0,1},
-                    {2,3}, {3,2}, {3,1}, {0,3},
-                    {1,0}, {1,1}, {3,3}, {0,0},
-                    {2,2}, {1,3}, {3,0}, {0,2}
-                };
+            {2,1}, {1,2 }, {2,0}, {0,1},
+            {2,3}, {3,2}, {3,1}, {0,3},
+            {1,0}, {1,1}, {3,3}, {0,0},
+            {2,2}, {1,3}, {3,0}, {0,2}
+        };
 
         static int[,] bayerOffsets = {
             {0,8,2,10 },
@@ -174,16 +158,6 @@ namespace UniStorm.Utility
 
         private int frameIndex = 0;
         private int haltonSequenceIndex = 0;
-
-        private int fullBufferIndex = 0;
-        private RenderTexture[] fullCloudsBuffer;
-        private RenderTexture lowResCloudsBuffer;
-        private RenderTexture[] cloudShadowsBuffer;
-        [HideInInspector]
-        public RenderTexture PublicCloudShadowTexture;
-
-        private float baseCloudOffset;
-        private float detailCloudOffset;
 
         public void SetCloudDetails(CloudPerformance performance, CloudType cloudType, CloudShadowsType cloudShadowsType, bool forceRecreateTextures = false)
         {
@@ -212,14 +186,14 @@ namespace UniStorm.Utility
             switch (cloudShadowsType)
             {
                 case CloudShadowsType.Off:
-                    this.cloudShadows.gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = (false);
+                    this.cloudShadows.gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = false;
                     sun.cookie = null;
                     break;
                 case CloudShadowsType.Simulated:
-                    this.cloudShadows.gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = (false);
+                    this.cloudShadows.gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = false;
                     break;
                 case CloudShadowsType.RealTime:
-                    this.cloudShadows.gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = (true);
+                    this.cloudShadows.gameObject.GetComponentsInChildren<MeshRenderer>()[1].enabled = true;
                     sun.cookie = null;
                     break;
                 default:
@@ -269,15 +243,6 @@ namespace UniStorm.Utility
 
             int size = presetResolutions[(int)performance];
 
-            EnsureArray(ref fullCloudsBuffer, 2);
-            EnsureArray(ref cloudShadowsBuffer, 2);
-            EnsureRenderTarget(ref fullCloudsBuffer[0], size, size, RenderTextureFormat.ARGBHalf, FilterMode.Bilinear, "fullCloudBuff0");
-            EnsureRenderTarget(ref fullCloudsBuffer[1], size, size, RenderTextureFormat.ARGBHalf, FilterMode.Bilinear, "fullCloudBuff1");
-            EnsureRenderTarget(ref cloudShadowsBuffer[0], CloudShadowResolutionValue, CloudShadowResolutionValue, RenderTextureFormat.ARGBHalf, FilterMode.Bilinear, "cloudShadowBuff0");
-            EnsureRenderTarget(ref cloudShadowsBuffer[1], size, size, RenderTextureFormat.ARGBHalf, FilterMode.Bilinear, "cloudShadowBuff1");
-
-            EnsureRenderTarget(ref lowResCloudsBuffer, size / 4, size / 4, RenderTextureFormat.ARGBFloat, FilterMode.Point, "quarterCloudBuff");
-
             skyMaterial.SetTexture("_uBaseNoise", GenerateNoise.baseNoiseTexture);
             skyMaterial.SetTexture("_uDetailNoise", GenerateNoise.detailNoiseTexture);
             skyMaterial.SetTexture("_uCurlNoise", GenerateNoise.curlNoiseTexture);
@@ -297,55 +262,23 @@ namespace UniStorm.Utility
             skyMaterial.SetVector("_uMoonDir", Vector3.Normalize(moon.forward));
             skyMaterial.SetVector("_uWorldSpaceCameraPos", UniStormSystem.Instance.PlayerCamera.transform.position);
 
-            #region Command Buffer
-            cloudsCommBuff.Clear();
-
-            // 1. Render the first clouds buffer - lower resolution
-            cloudsCommBuff.Blit(null, lowResCloudsBuffer, skyMaterial, 0);
-
-            // 2. Blend between low and hi-res
-            cloudsCommBuff.SetGlobalTexture("_uLowresCloudTex", lowResCloudsBuffer);
-            cloudsCommBuff.SetGlobalTexture("_uPreviousCloudTex", fullCloudsBuffer[fullBufferIndex]);
-            cloudsCommBuff.Blit(fullCloudsBuffer[fullBufferIndex], fullCloudsBuffer[fullBufferIndex ^ 1], skyMaterial, 1);
-
-            switch (CloudShadowsTypeRef)
-            {
-                case CloudShadowsType.Off:
-                    break;
-                case CloudShadowsType.Simulated:
-
-                    // Low performance light cookie noise
-                    shadowsBuildingMaterial.SetFloat("_uCloudsCoverage", skyMaterial.GetFloat("_uCloudsCoverage"));
-                    shadowsBuildingMaterial.SetFloat("_uCloudsCoverageBias", skyMaterial.GetFloat("_uCloudsCoverageBias"));
-                    shadowsBuildingMaterial.SetFloat("_uCloudsDensity", skyMaterial.GetFloat("_uCloudsDensity"));
-                    shadowsBuildingMaterial.SetFloat("_uCloudsDetailStrength", skyMaterial.GetFloat("_uCloudsDetailStrength"));
-                    shadowsBuildingMaterial.SetFloat("_uCloudsBaseEdgeSoftness", skyMaterial.GetFloat("_uCloudsBaseEdgeSoftness"));
-                    shadowsBuildingMaterial.SetFloat("_uCloudsBottomSoftness", skyMaterial.GetFloat("_uCloudsBottomSoftness"));
-                    shadowsBuildingMaterial.SetFloat("_uSimulatedCloudAlpha", cloudTransparency);
-
-                    cloudsCommBuff.Blit(GenerateNoise.baseNoiseTexture, cloudShadowsBuffer[0], shadowsBuildingMaterial, 3);
-                    PublicCloudShadowTexture = cloudShadowsBuffer[0];
-
-                    break;
-                case CloudShadowsType.RealTime:
-
-                    cloudsCommBuff.Blit(fullCloudsBuffer[fullBufferIndex ^ 1], cloudShadowsBuffer[0]);
-                    for (int i = 0; i < shadowBlurIterations; i++)
-                    {
-                        cloudsCommBuff.Blit(cloudShadowsBuffer[0], cloudShadowsBuffer[1], shadowsBuildingMaterial, 1);
-                        cloudsCommBuff.Blit(cloudShadowsBuffer[1], cloudShadowsBuffer[0], shadowsBuildingMaterial, 2);
-                    }
-
-                    break;
-                default:
-                    break;
-            }
-
-            cloudsCommBuff.SetGlobalFloat("_uLightning", 0.0f);
-            #endregion
-
-            // 3. Set to material for the sky (not in the command buffer)
+            //Update the cloudsMaterial with the latest texture
             cloudsMaterial.SetTexture("_MainTex", fullCloudsBuffer[fullBufferIndex ^ 1]);
+        }
+
+        void OnDestroy()
+        {
+            if (fullCloudsBuffer != null)
+            {
+                if (fullCloudsBuffer[0] != null) RenderTexture.ReleaseTemporary(fullCloudsBuffer[0]);
+                if (fullCloudsBuffer[1] != null) RenderTexture.ReleaseTemporary(fullCloudsBuffer[1]);
+            }
+            if (cloudShadowsBuffer != null)
+            {
+                if (cloudShadowsBuffer[0] != null) RenderTexture.ReleaseTemporary(cloudShadowsBuffer[0]);
+                if (cloudShadowsBuffer[1] != null) RenderTexture.ReleaseTemporary(cloudShadowsBuffer[1]);
+            }
+            if (lowResCloudsBuffer != null) RenderTexture.ReleaseTemporary(lowResCloudsBuffer);
         }
     }
 }

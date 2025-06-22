@@ -70,6 +70,7 @@ namespace UniStorm.Utility
             LightningBolt = Instantiate(TempBolt, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
             LightningBolt.transform.SetParent(FindObjectOfType<UniStormSystem>().transform);
             LightningBolt.name = "Lightning Renderer";
+            LightningBolt.textureMode = LineTextureMode.DistributePerSegment;
 
             GameObject TempEndPoint = Resources.Load("Lightning End Point") as GameObject;
             EndingPoint = Instantiate(TempEndPoint, Vector3.zero, Quaternion.identity).transform;

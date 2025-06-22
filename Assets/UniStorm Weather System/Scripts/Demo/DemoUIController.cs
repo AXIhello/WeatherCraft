@@ -136,7 +136,7 @@ namespace UniStorm.Example
         {
             if (UniStormSystem.Instance.CloudShadows == UniStormSystem.EnableFeature.Enabled)
             {
-                UniStormSystem.Instance.m_CloudShadows.enabled = !UniStormSystem.Instance.m_CloudShadows.enabled;
+                UniStormSystem.Instance.m_CloudShadows.isEnabled = !UniStormSystem.Instance.m_CloudShadows.isEnabled;
             }
         }
 
@@ -239,7 +239,7 @@ namespace UniStorm.Example
 #if ENABLE_INPUT_SYSTEM
                 m_EventSystem.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
 #else
-        m_EventSystem.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+                m_EventSystem.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
 #endif
             }
 

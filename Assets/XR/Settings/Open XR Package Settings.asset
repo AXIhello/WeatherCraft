@@ -785,6 +785,28 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+--- !u!114 &-4292657420037974116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: OculusQuestFeature Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR.Features.OculusQuestSupport:UnityEngine.XR.OpenXR.Features.OculusQuestSupport:OculusQuestFeature
+  m_enabled: 0
+  nameUi: Oculus Quest Support
+  version: 1.0.0
+  featureIdInternal: com.unity.openxr.feature.oculusquest
+  openxrExtensionStrings: XR_OCULUS_android_initialize_loader
+  company: Unity
+  priority: 0
+  required: 0
+  targetQuest: 1
+  targetQuest2: 1
 --- !u!114 &-3884623058556172510
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -880,23 +902,23 @@ MonoBehaviour:
   m_Name: Standalone
   m_EditorClassIdentifier: 
   features:
-  - {fileID: 1443452708213354362}
-  - {fileID: -1557233674024107270}
-  - {fileID: 4893829345954421791}
-  - {fileID: 5047315830286589360}
-  - {fileID: 6504682016904032715}
-  - {fileID: 5007098057516315081}
-  - {fileID: -34596358968032513}
-  - {fileID: -8732650259347650135}
+  - {fileID: 8221564594354640495}
+  - {fileID: -8749980634715080836}
+  - {fileID: 9096479736163431129}
+  - {fileID: -4478006660784508864}
+  - {fileID: -6081641041439107477}
+  - {fileID: 32361891232910083}
+  - {fileID: 2497339995422133549}
+  - {fileID: 928296757526069075}
   - {fileID: -4647824206626811188}
-  - {fileID: 4025793028449617705}
-  - {fileID: 1507748248788215057}
-  - {fileID: 6841333374066517713}
-  - {fileID: -4454024988132797082}
-  - {fileID: 154189092879288027}
-  - {fileID: 4451366187881382638}
-  - {fileID: 4890582492822650874}
-  - {fileID: -7494486358618572369}
+  - {fileID: -1028784285735575096}
+  - {fileID: -381482547018402083}
+  - {fileID: 7413458854745118488}
+  - {fileID: 4054846353496584751}
+  - {fileID: 8696673654983134887}
+  - {fileID: -4731438336562001402}
+  - {fileID: 4135229692886101830}
+  - {fileID: 2220871646205782247}
   - {fileID: 239522605376452086}
   m_renderMode: 1
   m_autoColorSubmissionMode: 1
@@ -1245,12 +1267,12 @@ MonoBehaviour:
   - {fileID: 8968387473496227895}
   - {fileID: -7492839480718335507}
   - {fileID: 9020184986697725232}
-  - {fileID: -2872153739648894974}
+  - {fileID: 8552536531684944657}
   - {fileID: 1027242606257235352}
   - {fileID: 7223869130901287869}
   - {fileID: -3884623058556172510}
   - {fileID: -5190053797094401786}
-  - {fileID: -393628444529489228}
+  - {fileID: 6357775900164768396}
   - {fileID: 4743943348186933471}
   - {fileID: -6368128839055358620}
   - {fileID: -7581625304019661375}
@@ -1487,6 +1509,51 @@ MonoBehaviour:
   priority: 0
   required: 0
 --- !u!114 &756802562200297984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: MetaQuestFeature Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR.Features.MetaQuestSupport:UnityEngine.XR.OpenXR.Features.MetaQuestSupport:MetaQuestFeature
+  m_enabled: 0
+  nameUi: Meta Quest Support
+  version: 1.0.0
+  featureIdInternal: com.unity.openxr.feature.metaquest
+  openxrExtensionStrings: XR_OCULUS_android_initialize_loader
+  company: Unity
+  priority: 0
+  required: 0
+  targetDevices:
+  - visibleName: Quest
+    manifestName: quest
+    enabled: 1
+  - visibleName: Quest 2
+    manifestName: quest2
+    enabled: 1
+  - visibleName: Quest Pro
+    manifestName: cambria
+    enabled: 1
+  - visibleName: Quest 3
+    manifestName: eureka
+    enabled: 1
+  - visibleName: Quest 3S
+    manifestName: quest3s
+    enabled: 1
+  forceRemoveInternetPermission: 0
+  symmetricProjection: 0
+  foveatedRenderingApi: 0
+  systemSplashScreen: {fileID: 0}
+  optimizeBufferDiscards: 1
+  lateLatchingMode: 0
+  lateLatchingDebug: 0
+  optimizeMultiviewRenderRegions: 0
+  spacewarpMotionVectorTextureFormat: 0
+--- !u!114 &857608336376187013
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

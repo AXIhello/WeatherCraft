@@ -12,7 +12,7 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - MEDIUM
+  - HIGH
   - VOLUMETRIC
   m_InvalidKeywords: []
   m_LightmapFlags: 4

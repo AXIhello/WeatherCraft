@@ -1,11 +1,19 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UniStorm;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI {
+    [Serializable]
+    public class CompositeRule {
+        public string name;
+        public List<GameObject> weatherButtons;
+        public WeatherType weatherType;
+    }
+    
     public class InventoryController : MonoBehaviour {
         public GameObject cloudButton;
         public GameObject lighteningButton;
@@ -16,6 +24,9 @@ namespace UI {
         
         private Dictionary<GameObject, bool> weatherSelected = new ();
         private Dictionary<GameObject, Image> buttonSelectedImages = new();
+        
+        // 添加合成规则映射列表，可在编辑器内编辑
+        public List<CompositeRule> compositeRules = new();
 
         public void Awake() {
             cloudButton.GetComponent<Button>().onClick.AddListener(OnCloudButtonClicked);
@@ -31,10 +42,6 @@ namespace UI {
             buttonSelectedImages[waterButton] = waterButton.transform.Find("Selected").GetComponent<Image>();
             
             rainButton.GetComponent<Button>().onClick.AddListener(OnRainButtonClicked);
-            weatherSelected[rainButton] = false;
-            buttonSelectedImages[rainButton] = rainButton.transform.Find("Selected").GetComponent<Image>();
-
-            rainButton.GetComponent<Button>().onClick.AddListener(OnCraftButtonClicked);
             weatherSelected[rainButton] = false;
             buttonSelectedImages[rainButton] = rainButton.transform.Find("Selected").GetComponent<Image>();
             
@@ -65,10 +72,24 @@ namespace UI {
         }
 
         private void OnCraftButtonClicked() {
-            // Implement crafting logic here
-            Debug.Log("Craft button clicked. Implement crafting logic here.");
-            // Example: Check if the player has enough resources to craft an item
-            // If so, create the item and update the inventory UI
+            bool ruleFound = false;
+            // 检索 CompositeRules 中选中的按钮组合
+            foreach (var rule in compositeRules) {
+                // 如果该规则要求的所有按钮均处于选中状态，则认为符合
+                bool allSelected = rule.weatherButtons.All(btn => weatherSelected.ContainsKey(btn) && weatherSelected[btn]);
+                if (allSelected) {
+                    ruleFound = true;
+                    // 调用 UniStorm 的天气变化（立即生效），这里假设 UniStormWeatherSystem.Instance.ChangeWeather 接受 weatherType 和立即生效参数 true
+                    UniStormManager.Instance.ChangeWeatherInstantly(rule.weatherType);
+                }
+            }
+            if (!ruleFound) {
+                Debug.Log("没有找到符合的天气按钮组合。");
+            }
+            // 清空所有按钮选中状态
+            foreach (var button in weatherSelected.Keys.ToList()) {
+                weatherSelected[button] = false;
+            }
         }
     }
 }

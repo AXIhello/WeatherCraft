@@ -27,14 +27,10 @@ Category {
 			#pragma fragment frag
 			#pragma multi_compile_particles
 			#pragma multi_compile_fog
-			#pragma multi_compile_instancing
-
-			#pragma enable_d3d11_debug_symbols
-
-			#include "UnityCG.cginc"
 			
-			UNITY_DECLARE_TEX2D(_MainTex);
-			//sampler2D _MainTex;
+			#include "UnityCG.cginc"
+
+			sampler2D _MainTex;
 			fixed4 _MoonColor;
 			float _MoonBrightness;
 			
@@ -42,8 +38,6 @@ Category {
 				float4 vertex : POSITION;
 				fixed4 color : COLOR;
 				float2 texcoord : TEXCOORD0;
-
-				UNITY_VERTEX_INPUT_INSTANCE_ID //Insert
 			};
 
 			struct v2f {
@@ -54,9 +48,6 @@ Category {
 				#ifdef SOFTPARTICLES_ON
 				float4 projPos : TEXCOORD2;
 				#endif
-
-				//UNITY_VERTEX_INPUT_INSTANCE_ID //Insert
-				UNITY_VERTEX_OUTPUT_STEREO //Insert
 			};
 			
 			float4 _MainTex_ST;
@@ -64,12 +55,7 @@ Category {
 			v2f vert (appdata_t v)
 			{
 				v2f o;
-
-				UNITY_SETUP_INSTANCE_ID(v); //Insert
-				UNITY_INITIALIZE_OUTPUT(v2f, o); //Insert
-				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o); //Insert
-
-				//UNITY_INITIALIZE_OUTPUT(v2f, o);
+				UNITY_INITIALIZE_OUTPUT(v2f, o);
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.vertex.z = 1.0e-9f;
 				o.color = v.color;
@@ -77,14 +63,12 @@ Category {
 				return o;
 			}
 
-			//sampler2D_float _CameraDepthTexture;
+			sampler2D_float _CameraDepthTexture;
 			float _InvFade;
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
-				//UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i); //Insert
-
-				fixed4 col = 2.0 * i.color * (_MoonColor) * UNITY_SAMPLE_TEX2D(_MainTex, i.texcoord) * _MoonBrightness; //tex2D
+				fixed4 col = 2.0 * i.color * (_MoonColor) * tex2D(_MainTex, i.texcoord) * _MoonBrightness;
                 float intensity = dot(col.rgb, float3(0.3, 0.3, 0.3));
 
                 if (col.a < 0.01) discard;

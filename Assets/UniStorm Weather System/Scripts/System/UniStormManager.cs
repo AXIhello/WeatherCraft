@@ -139,10 +139,10 @@ namespace UniStorm
             {
                 UniStormSystem.Instance.PlayerCamera.enabled = false;
 
-                if (//UniStormSystem.Instance.PlayerCamera.GetComponent<ScreenSpaceCloudShadows>() != null &&
+                if (UniStormSystem.Instance.PlayerCamera.GetComponent<ScreenSpaceCloudShadows>() != null &&
                     UniStormSystem.Instance.CloudShadows == UniStormSystem.EnableFeature.Enabled)
                 {
-                    UniStormSystem.Instance.EnableCloudShadows(false); //PlayerCamera.GetComponent<ScreenSpaceCloudShadows>().enabled = false;
+                    UniStormSystem.Instance.PlayerCamera.GetComponent<ScreenSpaceCloudShadows>().enabled = false;
                 }
 
                 UniStormSystem.Instance.PlayerTransform = PlayerTransform;
@@ -153,7 +153,6 @@ namespace UniStorm
                 UniStormSystem.Instance.PlayerCamera = CameraSource;
                 UniStormSystem.Instance.m_UniStormLightningSystem.PlayerTransform = PlayerTransform;
 
-                /*
                 //Look to see if the Render Clouds CommandBuffer exists on the newly assignned camera source, if it doesn't add one as this is needed to properly render the clouds.
                 UnityEngine.Rendering.CommandBuffer[] CommandBuffers = CameraSource.GetCommandBuffers(UnityEngine.Rendering.CameraEvent.AfterSkybox);
 
@@ -175,12 +174,11 @@ namespace UniStorm
                     CameraSource.AddCommandBuffer(UnityEngine.Rendering.CameraEvent.AfterSkybox, cloudsCommBuff);
                     cloudsCommBuff.name = "Render Clouds";
                 }
-                */
 
-                if (//UniStormSystem.Instance.PlayerCamera.GetComponent<ScreenSpaceCloudShadows>() == null &&
+                if (UniStormSystem.Instance.PlayerCamera.GetComponent<ScreenSpaceCloudShadows>() == null &&
                     UniStormSystem.Instance.CloudShadows == UniStormSystem.EnableFeature.Enabled)
                 {
-                    UniStormCloudShadowsFeature.Settings m_CloudShadows = UniStormSystem.Instance.GetCloudShadowsFeatureSettings(); //ScreenSpaceCloudShadows PlayerCamera.gameObject.AddComponent<ScreenSpaceCloudShadows>();
+                    ScreenSpaceCloudShadows m_CloudShadows = UniStormSystem.Instance.PlayerCamera.gameObject.AddComponent<ScreenSpaceCloudShadows>();
 
                     m_CloudShadows.CloudShadowTexture = FindObjectOfType<UniStormClouds>().PublicCloudShadowTexture;
                     m_CloudShadows.BottomThreshold = 0.5f;
@@ -192,7 +190,7 @@ namespace UniStorm
                 {
                     if (UniStormSystem.Instance.CloudShadows == UniStormSystem.EnableFeature.Enabled)
                     {
-                        UniStormSystem.Instance.EnableCloudShadows(true); //PlayerCamera.GetComponent<ScreenSpaceCloudShadows>().enabled = true;
+                        UniStormSystem.Instance.PlayerCamera.GetComponent<ScreenSpaceCloudShadows>().enabled = true;
                     }
                 }
 
@@ -406,9 +404,7 @@ namespace UniStorm
         {
             if (UniStormSystem.Instance.UniStormInitialized)
             {
-                //UniStormSystem.Instance.PlayerCamera.GetComponent<UniStorm.Effects.UniStormSunShafts>().enabled = CurrentState;
-                UniStormSystem.Instance.SunShaftsEffect = CurrentState ? UniStormSystem.EnableFeature.Enabled : UniStormSystem.EnableFeature.Disabled;
-                UniStormSystem.Instance.MoonShaftsEffect = CurrentState ? UniStormSystem.EnableFeature.Enabled : UniStormSystem.EnableFeature.Disabled;
+                UniStormSystem.Instance.PlayerCamera.GetComponent<UniStorm.Effects.UniStormSunShafts>().enabled = CurrentState;
             }
         }
 

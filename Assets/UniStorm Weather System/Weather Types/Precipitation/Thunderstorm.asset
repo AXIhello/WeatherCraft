@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Thunderstorm
   m_EditorClassIdentifier: 
   WeatherTypeName: Thunderstorm
-  CloudProfileComponent: {fileID: 11400000, guid: 8af8e06821542df46bd3ee0b1093a6ff,
-    type: 2}
+  CloudProfileComponent: {fileID: 11400000, guid: 8af8e06821542df46bd3ee0b1093a6ff, type: 2}
   SunIntensity: 0.6
   CloudShadowIntensity: 0
   MoonIntensity: 0.5
@@ -57,17 +56,16 @@ MonoBehaviour:
     atime6: 0
     atime7: 0
     m_Mode: 0
+    m_ColorSpace: -1
     m_NumColorKeys: 8
     m_NumAlphaKeys: 2
   WindSpeedLevel: 0.85
   WindBendingLevel: 0.2
   WindIntensity: 1
-  WeatherEffect: {fileID: 198882807848139052, guid: 516fd25c12e04ba46bce3ce4bab8f8e1,
-    type: 3}
-  ParticleEffectAmount: 1000
-  ParticleEffectVector: {x: 0, y: 28, z: 20}
-  AdditionalWeatherEffect: {fileID: 198814685187613174, guid: 041ba628b590a1c47a1643f108529d32,
-    type: 3}
+  WeatherEffect: {fileID: 198882807848139052, guid: 516fd25c12e04ba46bce3ce4bab8f8e1, type: 3}
+  ParticleEffectAmount: 2000
+  ParticleEffectVector: {x: 0, y: 0, z: 0}
+  AdditionalWeatherEffect: {fileID: 198814685187613174, guid: 041ba628b590a1c47a1643f108529d32, type: 3}
   AdditionalParticleEffectAmount: 25
   AdditionalParticleEffectVector: {x: 0, y: 0, z: 0}
   WeatherVolume: 1
@@ -110,6 +108,7 @@ MonoBehaviour:
     atime6: 0
     atime7: 0
     m_Mode: 0
+    m_ColorSpace: -1
     m_NumColorKeys: 8
     m_NumAlphaKeys: 2
   UseLightning: 0

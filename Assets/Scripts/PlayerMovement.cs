@@ -28,17 +28,6 @@ public class PlayerMoveController : MonoBehaviour
 
     void Update()
     {
-        // 读取鼠标输入用于视角控制
-        var mouse = Mouse.current;
-        if (mouse != null)
-        {
-            float mouseX = mouse.delta.x.ReadValue() * mouseSensitivity;
-            float mouseY = mouse.delta.y.ReadValue() * mouseSensitivity;
-            yaw += mouseX;
-            pitch -= mouseY;
-            pitch = Mathf.Clamp(pitch, -80f, 80f);
-        }
-
         // 处理移动输入
         var keyboard = Keyboard.current;
         Vector2 moveInput = moveActionRef.action.ReadValue<Vector2>();
@@ -53,7 +42,25 @@ public class PlayerMoveController : MonoBehaviour
             }
         }
         direction.y -= gravity * Time.deltaTime;
-
+        
+        // 如果按住Alt显示鼠标位置
+        if (keyboard != null && keyboard.leftAltKey.isPressed) {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            return;
+        }
+        Cursor.visible = false;
+        
+        // 读取鼠标输入用于视角控制
+        var mouse = Mouse.current;
+        if (mouse != null)
+        {
+            float mouseX = mouse.delta.x.ReadValue() * mouseSensitivity;
+            float mouseY = mouse.delta.y.ReadValue() * mouseSensitivity;
+            yaw += mouseX;
+            pitch -= mouseY;
+            pitch = Mathf.Clamp(pitch, -80f, 80f);
+        }
         // 只使用 Y 轴旋转转换移动方向
         Quaternion yawRotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
         playerController.Move(yawRotation * direction * (speed * Time.deltaTime));

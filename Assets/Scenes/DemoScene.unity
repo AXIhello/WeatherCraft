@@ -169,10 +169,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerController: {fileID: 51896526}
-  speed: 6
+  speed: 5
   jumpPower: 2
-  gravity: 6
-  mouseSensitivity: 0.5
+  gravity: 5
+  mouseSensitivity: 0.3
   moveActionRef: {fileID: 8275859971367427353, guid: 0be0028c24f2a4c14a96b6aa39055933, type: 3}
   playerCamera: {fileID: 625442271}
   smoothTime: 0.05
@@ -214,7 +214,7 @@ GameObject:
   - component: {fileID: 53133815}
   - component: {fileID: 53133814}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Selected
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1608,7 +1608,7 @@ GameObject:
   - component: {fileID: 856899483}
   - component: {fileID: 856899485}
   m_Layer: 5
-  m_Name: cloud
+  m_Name: CloudButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1815,7 +1815,7 @@ GameObject:
   - component: {fileID: 1010340151}
   - component: {fileID: 1010340150}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Selected
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2084,7 +2084,7 @@ GameObject:
   - component: {fileID: 1125462348}
   - component: {fileID: 1125462347}
   m_Layer: 5
-  m_Name: Synthesis
+  m_Name: CraftButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2320,7 +2320,7 @@ GameObject:
   - component: {fileID: 1217555015}
   - component: {fileID: 1217555014}
   m_Layer: 5
-  m_Name: rain
+  m_Name: RainButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3056,6 +3056,7 @@ GameObject:
   - component: {fileID: 1703821789}
   - component: {fileID: 1703821791}
   - component: {fileID: 1703821790}
+  - component: {fileID: 1703821792}
   m_Layer: 5
   m_Name: InventoryPanel
   m_TagString: Untagged
@@ -3077,8 +3078,8 @@ RectTransform:
   m_Children:
   - {fileID: 856899482}
   - {fileID: 2115177529}
-  - {fileID: 1734027873}
   - {fileID: 1217555013}
+  - {fileID: 1734027873}
   m_Father: {fileID: 1290827225}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
@@ -3126,6 +3127,23 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1703821792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703821788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5336e793d6c0bc2478e0985c42c8f62f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cloudButton: {fileID: 856899481}
+  lighteningButton: {fileID: 1734027872}
+  waterButton: {fileID: 2115177528}
+  rainButton: {fileID: 1217555012}
+  craftButton: {fileID: 1125462345}
 --- !u!1 &1734027872
 GameObject:
   m_ObjectHideFlags: 0
@@ -3139,7 +3157,7 @@ GameObject:
   - component: {fileID: 1734027874}
   - component: {fileID: 1734027876}
   m_Layer: 5
-  m_Name: ligntening
+  m_Name: LignteningButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3152,8 +3170,8 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1734027872}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.00011291989}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3320,7 +3338,7 @@ GameObject:
   - component: {fileID: 1766375977}
   - component: {fileID: 1766375976}
   m_Layer: 5
-  m_Name: selected
+  m_Name: Selected
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3643,7 +3661,7 @@ GameObject:
   - component: {fileID: 2026237457}
   - component: {fileID: 2026237456}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Selected
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3752,7 +3770,7 @@ GameObject:
   - component: {fileID: 2115177530}
   - component: {fileID: 2115177532}
   m_Layer: 5
-  m_Name: water
+  m_Name: WaterButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

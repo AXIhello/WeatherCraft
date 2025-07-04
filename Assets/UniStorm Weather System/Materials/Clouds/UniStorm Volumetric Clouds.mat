@@ -12,8 +12,7 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - MEDIUM
-  - PREWARM
+  - HIGH
   - VOLUMETRIC
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -68,7 +67,7 @@ Material:
     - EARTH_RADIUS: 6371000
     - _DetailScale: 1
     - _EnableDithering: 1
-    - _FogBlendHeight: 0.14999998
+    - _FogBlendHeight: 0.3
     - _FogGradient: 0.405
     - _FogGradientHeight: 0.472
     - _MaskMoon: 1
@@ -88,14 +87,14 @@ Material:
     - _WetnessStrength: 0
     - _WorldPosGlobal: 0
     - _uAttenuation: 0.5250656
-    - _uCloudAlpha: 1.4
+    - _uCloudAlpha: 1
     - _uCloudHeight: 1
     - _uCloudsBackwardScatteringG: -0.2
     - _uCloudsBaseEdgeSoftness: 0.035
     - _uCloudsBaseScale: 1.72
     - _uCloudsBottom: 500
     - _uCloudsBottomSoftness: 0.65
-    - _uCloudsCoverage: 0.55
+    - _uCloudsCoverage: 0.542
     - _uCloudsCoverageBias: 0.02
     - _uCloudsDensity: 1
     - _uCloudsDetailScale: 1000
@@ -117,15 +116,15 @@ Material:
     - _uCurlScale: 1000
     - _uCurlStrength: 0.15
     - _uEarthRadius: 637100
-    - _uHorizonColorFadeEnd: 0.32
-    - _uHorizonColorFadeStart: -0.2
+    - _uHorizonColorFadeEnd: 0
+    - _uHorizonColorFadeStart: 0
     - _uHorizonDarkness: 1.15
-    - _uHorizonFadeEnd: 0.22
+    - _uHorizonFadeEnd: 0.18
     - _uHorizonFadeStart: 0
     - _uHorizonHeight: 0
     - _uLightningContrast: 0
     - _uMoonAttenuation: 0.1
-    - _uSunFadeEnd: 0.18
+    - _uSunFadeEnd: 0.045
     m_Colors:
     - CLOUDS_AMBIENT_COLOR_BOTTOM: {r: 0.038218036, g: 0.06565705, b: 0.085249215, a: 1}
     - CLOUDS_AMBIENT_COLOR_TOP: {r: 0.47080937, g: 0.52752197, b: 0.6317268, a: 1}
@@ -148,7 +147,7 @@ Material:
     - _uHorizonColor: {r: 1, g: 1, b: 1, a: 1}
     - _uLightningColor: {r: 0.7647059, g: 0.8352941, b: 0.8862745, a: 1}
     - _uMoonColor: {r: 0.33023313, g: 0.36793935, b: 0.38679242, a: 1}
-    - _uMoonDir: {r: -0.23346138, g: 0.62750685, b: -0.74278593, a: 0}
+    - _uMoonDir: {r: 0.57357645, g: 0.8183724, b: -0.03573098, a: 0}
     - _uSunColor: {r: 0.6529459, g: 0.66882735, b: 0.6886792, a: 1}
-    - _uSunDir: {r: -0.005813211, g: -0.71984637, b: 0.69410914, a: 0}
+    - _uSunDir: {r: -0.34202018, g: -0.9387983, b: 0.04098891, a: 0}
   m_BuildTextureStacks: []

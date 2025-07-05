@@ -5,8 +5,6 @@ public class PlayerMoveController : MonoBehaviour
 {
     public CharacterController playerController;
     public float speed = 3;
-    public float jumpPower = 3;
-    public float gravity = 7f;
     public float mouseSensitivity = 1f;
     public InputActionReference moveActionRef;
     public Camera playerCamera;
@@ -28,30 +26,42 @@ public class PlayerMoveController : MonoBehaviour
 
     void Update()
     {
-        // 处理移动输入
         var keyboard = Keyboard.current;
         Vector2 moveInput = moveActionRef.action.ReadValue<Vector2>();
         float horizontal = moveInput.x;
         float vertical = moveInput.y;
-        if (playerController.isGrounded)
+
+        // 始终获取水平移动，并根据 Q/E 键设置垂直移动
+        direction = new Vector3(horizontal, 0, vertical);
+        if (keyboard != null)
         {
-            direction = new Vector3(horizontal, 0, vertical);
-            if (keyboard != null && keyboard.spaceKey.wasPressedThisFrame)
+            if (keyboard.eKey.isPressed)
             {
-                direction.y = jumpPower;
+                direction.y = speed;
+            }
+            else if (keyboard.qKey.isPressed)
+            {
+                direction.y = -speed;
+            }
+            else
+            {
+                direction.y = 0; // 当没有上下方向输入时，不做垂直移动
             }
         }
-        direction.y -= gravity * Time.deltaTime;
-        
-        // 如果按住Alt显示鼠标位置
-        if (keyboard != null && keyboard.leftAltKey.isPressed) {
+
+        // 限制方向向量的长度，确保移动速度不会超过步行速度
+        direction = Vector3.ClampMagnitude(direction, 1f);
+
+        // 按住 Alt 时显示鼠标位置
+        if (keyboard != null && keyboard.leftAltKey.isPressed)
+        {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             return;
         }
         Cursor.visible = false;
-        
-        // 读取鼠标输入用于视角控制
+
+        // 鼠标视角控制
         var mouse = Mouse.current;
         if (mouse != null)
         {
@@ -61,7 +71,8 @@ public class PlayerMoveController : MonoBehaviour
             pitch -= mouseY;
             pitch = Mathf.Clamp(pitch, -80f, 80f);
         }
-        // 只使用 Y 轴旋转转换移动方向
+
+        // 根据当前 Y 轴旋转转换移动方向
         Quaternion yawRotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
         playerController.Move(yawRotation * direction * (speed * Time.deltaTime));
     }
